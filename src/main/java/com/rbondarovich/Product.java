@@ -37,4 +37,5 @@ public class Product {
     public void setPricePerUnit(String pricePerUnit) {
         this.pricePerUnit = pricePerUnit;
     }
+
 }

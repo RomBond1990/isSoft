@@ -19,6 +19,12 @@ public class OrderItem {
     public OrderItem() {
     }
 
+    public OrderItem(String id, String productId, String quantity) {
+        this.id = id;
+        this.productId = productId;
+        this.quantity = quantity;
+    }
+
     public String getId() {
         return id;
     }

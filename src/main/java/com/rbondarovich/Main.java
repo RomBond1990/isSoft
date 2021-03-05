@@ -2,40 +2,59 @@ package com.rbondarovich;
 
 import com.opencsv.bean.CsvToBeanBuilder;
 
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) throws FileNotFoundException {
 
-        String ordersFile = "D:\\JavaEE\\projects\\isSoft\\src\\main\\resources\\orders.csv";
-        String orderItemsFile = "D:\\JavaEE\\projects\\isSoft\\src\\main\\resources\\orders.csv";
-        String productFile = "D:\\JavaEE\\projects\\isSoft\\src\\main\\resources\\products.csv";
+        String ordersFile = "src\\main\\resources\\orders.csv";
+        String orderItemsFile = "src\\main\\resources\\order_items.csv";
+        String productFile = "src\\main\\resources\\products.csv";
 
-        List<Order> ordersList = new CsvToBeanBuilder(new FileReader(ordersFile))
+        List<Order> allOrders = new CsvToBeanBuilder(new FileReader(ordersFile))
                 .withType(Order.class)
                 .build()
                 .parse();
 
-        List<OrderItem> orderItems = new CsvToBeanBuilder(new FileReader(orderItemsFile))
+        List<OrderItem> allOrderItems = new CsvToBeanBuilder(new FileReader(orderItemsFile))
                 .withType(OrderItem.class)
                 .build()
                 .parse();
 
-        List<Product> productsList = new CsvToBeanBuilder(new FileReader(productFile))
-                .withType(OrderItem.class)
+        List<Product> allProducts = new CsvToBeanBuilder(new FileReader(productFile))
+                .withType(Product.class)
                 .build()
                 .parse();
 
-       List <Order> orderInDay = new ArrayList<>();
-       for(Order bean : ordersList) {
-           if("2021-01-21".contains(bean.getDay())) orderInDay.add(bean);
-       }
+        Map<String, List<Order>> ordersByDay = OrderUtils.groupOrdersByDay(allOrders);
 
+        for (Map.Entry<String, List<Order>> entry :
+                ordersByDay.entrySet()) {
 
+            List<Order> OrdersByDay = entry.getValue();
+            Map<String, Integer> quantityByProductId = OrderUtils.findAllProductsQuantityByDay(OrdersByDay, allOrderItems);
+            Map<String, Integer> totalPriceByProduct = OrderUtils.getTotalPriceByProductNameForOneDay(quantityByProductId, allProducts);
+            System.out.print("Сегодня " + entry.getKey() + " ");
+            OrderUtils.getBestProductByDay(totalPriceByProduct);
+        }
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
