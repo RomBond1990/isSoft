@@ -1,33 +1,22 @@
 package com.rbondarovich;
 
-import com.opencsv.bean.CsvToBeanBuilder;
-
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.List;
 import java.util.Map;
 
+import static com.rbondarovich.CSVReaderDecorator.getListObjects;
+
+
 public class Main {
-    public static void main(String[] args) throws FileNotFoundException {
+
+    public static void main(String[] args) {
 
         String ordersFile = "src\\main\\resources\\orders.csv";
         String orderItemsFile = "src\\main\\resources\\order_items.csv";
         String productFile = "src\\main\\resources\\products.csv";
 
-        List<Order> allOrders = new CsvToBeanBuilder(new FileReader(ordersFile))
-                .withType(Order.class)
-                .build()
-                .parse();
-
-        List<OrderItem> allOrderItems = new CsvToBeanBuilder(new FileReader(orderItemsFile))
-                .withType(OrderItem.class)
-                .build()
-                .parse();
-
-        List<Product> allProducts = new CsvToBeanBuilder(new FileReader(productFile))
-                .withType(Product.class)
-                .build()
-                .parse();
+        List<Order> allOrders = getListObjects(ordersFile, Order.class);
+        List<OrderItem> allOrderItems = getListObjects(orderItemsFile, OrderItem.class);
+        List<Product> allProducts = getListObjects(productFile, Product.class);
 
         Map<String, List<Order>> ordersByDay = OrderUtils.groupOrdersByDay(allOrders);
 
@@ -40,21 +29,6 @@ public class Main {
             System.out.print("Сегодня " + entry.getKey() + " ");
             OrderUtils.getBestProductByDay(totalPriceByProduct);
         }
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

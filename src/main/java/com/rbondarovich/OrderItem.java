@@ -5,7 +5,6 @@ import com.opencsv.bean.CsvBindByName;
 
 public class OrderItem {
 
-
     @CsvBindByName(column = "ORDER_ID")
     private String id;
 
